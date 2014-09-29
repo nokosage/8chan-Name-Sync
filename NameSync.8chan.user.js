@@ -523,11 +523,11 @@
       });
       *//*
       $.on($('[value="New Reply"]'), 'click', function() {
-		    Sync.postQREvent();
-	    });
+        Sync.postQREvent();
+      });
       $.on($('#thread_'+g.thread).parentNode, 'submit', function() {
-		    Sync.postFormEvent();
-	    });*/
+        Sync.postFormEvent();
+      });*/
       window.$(document).on('new_post', function(e, post) {
         NameSync.run();
       });
@@ -807,7 +807,7 @@
           Tripfag_Finder.click();
         });
       }
-	  },
+    },
     click: function () {
       if ($('#Tripfag_Finder', document.body))
         Tripfag_Finder.close();
