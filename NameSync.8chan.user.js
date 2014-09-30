@@ -1,6 +1,6 @@
-﻿// ==UserScript==
+// ==UserScript==
 // @name         8chan Name Sync
-// @version      0.1.3
+// @version      0.1.4
 // @namespace    nokosage
 // @description  Enables names on 8chan. Does not require 8chan X.
 // @author       nokosage
@@ -13,7 +13,7 @@
 // ==/UserScript==
 
 /*
-  8chan Sync v0.1.3
+  8chan Sync v0.1.4
   https://www.namesync.org/8chan/
 
   Developers:
@@ -344,7 +344,7 @@
   
   g = {
     NAMESPACE: 'NameSync.8chan.',
-    VERSION: '0.1.3',
+    VERSION: '0.1.4',
     checked: false,
     posts: {}
   };
@@ -523,13 +523,16 @@
       });
       *//*
       $.on($('[value="New Reply"]'), 'click', function() {
-        Sync.postQREvent();
-      });
+		    Sync.postQREvent();
+	    });
       $.on($('#thread_'+g.thread).parentNode, 'submit', function() {
-        Sync.postFormEvent();
-      });*/
+		    Sync.postFormEvent();
+	    });*/
       window.$(document).on('new_post', function(e, post) {
         NameSync.run();
+      });
+      window.$(document).on('post_submitted', function(e, data) {
+        Sync.postQREvent(e, data);
       });
       NameSync.run();
       NameSync.check(1);
@@ -645,7 +648,20 @@
         }
       }, $HEADERS);
     },
-    postQREvent: function (tries) {
+    postQREvent: function (e, data) {
+      var name, subject, email, postID, threadID;
+      console.log(e);
+      console.log(data);
+      postID = data.postid;
+      threadID = g.thread;
+      name = ($.getVal('persona.name') !== 'undefined') ? $.getVal('persona.name') : '';
+      email = ($.getVal('persona.email') !== 'undefined') ? $.getVal('persona.email') : '';
+      subject = ($.getVal('persona.subject') !== 'undefined') ? $.getVal('persona.subject') : '';
+      
+      Sync.post(name, subject, email, threadID, postID);
+      Sync.lastPosts[Sync.lastPosts.length] = postID;
+    },
+    postEvent: function (tries) {
       var name, subject, email, postID, threadID;
 	    if (!tries) tries = 1;
       window.setTimeout(function(){
@@ -656,7 +672,7 @@
         //threadID = g.thread;
         console.log(Sync.lastPosts);
         if (window.location.href.split('#')[1] && !window.location.href.split('#')[1].split('q')[1] && !(Sync.lastPosts.indexOf(window.location.href.split('#')[1]) >= 0)) Sync.postTry();
-        else if (tries < 10) Sync.postQREvent(tries+1);
+        else if (tries < 10) Sync.postEvent(tries+1);
       }, tries*500);
     },
     postTry: function() {
@@ -1008,7 +1024,7 @@
         console.log(previous);
         window.dopost = function(response) { 
           previous(response);
-          Sync.postQREvent();
+          Sync.postEvent();
         }
     }
     else
