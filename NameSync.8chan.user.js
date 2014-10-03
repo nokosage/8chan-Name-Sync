@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         8chan Name Sync
-// @version      0.1.5
+// @version      0.1.6
 // @namespace    nokosage
 // @description  Enables names on 8chan. Does not require 8chan X.
 // @author       nokosage
-// @include      *://*.8chan.co/b/*
+// @include      *://*8chan.co/b/*
 // @run-at       document-start
 // @grant        none
 // @updateURL    https://namesync.org/8chan/builds/NameSync.meta.js
@@ -13,7 +13,7 @@
 // ==/UserScript==
 
 /*
-  8chan Sync v0.1.5
+  8chan Sync v0.1.6
   https://www.namesync.org/8chan/
 
   Developers:
@@ -344,7 +344,7 @@
   
   g = {
     NAMESPACE: 'NameSync.8chan.',
-    VERSION: '0.1.5',
+    VERSION: '0.1.6',
     checked: false,
     posts: {}
   };
@@ -495,6 +495,7 @@
   };
   */
   NameSync = {
+    pollReady: true,
     ready: function () {
       var path,
       _ref;
@@ -517,28 +518,24 @@
       if ($.getVal('post.form') !== 'undefined') {
         Sync.postFormEvent();
       }
-      /*
-      $.on(d, 'new_post', function (e) {
-        NameSync.run();
-      });
-      *//*
-      $.on($('[value="New Reply"]'), 'click', function() {
-		    Sync.postQREvent();
-	    });
-      $.on($('#thread_'+g.thread).parentNode, 'submit', function() {
-		    Sync.postFormEvent();
-	    });*/
+      
+      /* jQuery */
       window.$(document).on('new_post', function(e, post) {
-        NameSync.run();
+        NameSync.pollRun();
       });
       window.$(document).on('post_submitted', function(e, data) {
         Sync.postQREvent(e, data);
       });
+      /* /jQuery */
+      
       NameSync.run();
       NameSync.check(1);
     },
     check: function(t) {
       //if (t%3 === 0) NameSync.checkPosts();
+      if (!NameSync.pollReady)
+        NameSync.pollReady = true;
+      
       setTimeout(function(){
         NameSync.check(t+1);
       }, 1000);
@@ -548,6 +545,12 @@
       posts = $$('#thread_'+g.thread+' > .post');
       if (posts.length !== Object.keys(g.posts).length) NameSync.run();
       setTimeout(function(){NameSync.checkPosts();}, 3000);
+    },
+    pollRun: function() {
+      if (NameSync.pollReady) {
+        NameSync.run();
+        NameSync.pollReady = false;
+      }
     },
     run: function () {
       var posts;
@@ -672,7 +675,7 @@
         //threadID = g.thread;
         console.log(Sync.lastPosts);
         if (window.location.href.split('#')[1] && !window.location.href.split('#')[1].split('q')[1] && !(Sync.lastPosts.indexOf(window.location.href.split('#')[1]) >= 0)) Sync.postTry();
-        else if (tries < 10) Sync.postEvent(tries+1);
+        else if (tries < 20) Sync.postEvent(tries+1);
       }, tries*500);
     },
     postTry: function() {

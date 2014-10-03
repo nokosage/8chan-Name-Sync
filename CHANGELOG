@@ -1,3 +1,8 @@
+0.1.6 -> UNSTABLE
+- Fixed script not running on pages sometimes
+- Modified posting limits. Let us see if this performs better
+- Added polling times for updates, so as to not waste bandwidth
+
 0.1.5 -> UNSTABLE
 - Works with www.8chan.co
 - Serverside change for this, too
