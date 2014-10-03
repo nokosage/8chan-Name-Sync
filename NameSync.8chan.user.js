@@ -548,7 +548,9 @@
     },
     pollRun: function() {
       if (NameSync.pollReady) {
-        NameSync.run();
+        setTimeout(function() {
+          NameSync.run();
+        }, 500);
         NameSync.pollReady = false;
       }
     },
@@ -562,7 +564,7 @@
         else
           g.posts[post.id.slice(6)] = new Post(post);
       }
-      console.log(g.posts);
+      //console.log(g.posts);
       return Sync.sync();
     }
   };
@@ -572,6 +574,8 @@
     lastUpdate: 0,
     updateAllPosts: function () {
       var _i, _len, key, data;
+      //console.log(g.posts);
+      //console.log(Names.namesync);
       for (_i = 0, _len = Names.namesync.length; _i < _len; _i++) {
         data = Names.namesync[_i];
         key = data['p'];
