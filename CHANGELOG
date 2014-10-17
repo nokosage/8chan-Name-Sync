@@ -1,3 +1,9 @@
+0.2.0 -> STABLE
+- Better post handling
+  - Should no longer miss names or overwrite others
+- Now runs on board pages and the catalog
+- Has a partially running finder implementation
+
 0.1.6 -> UNSTABLE
 - Fixed script not running on pages sometimes
 - Modified posting limits. Let us see if this performs better

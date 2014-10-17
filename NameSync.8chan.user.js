@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         8chan Name Sync
-// @version      0.1.6
+// @version      0.2.0
 // @namespace    nokosage
 // @description  Enables names on 8chan. Does not require 8chan X.
 // @author       nokosage
@@ -13,7 +13,7 @@
 // ==/UserScript==
 
 /*
-  8chan Sync v0.1.6
+  8chan Sync v0.2.0
   https://www.namesync.org/8chan/
 
   Developers:
@@ -344,7 +344,7 @@
   
   g = {
     NAMESPACE: 'NameSync.8chan.',
-    VERSION: '0.1.6',
+    VERSION: '0.2.0',
     checked: false,
     posts: {}
   };
@@ -408,7 +408,7 @@
                 '<div style="font-weight: bold; padding-bottom: 5px; font-size: 18pt;">NameSync Settings</div>'+
                 '<fieldset>'+
                   '<div>'+
-                    '<label style="text-decoration: underline; font-weight: bold;cursor: pointer;"><input type="checkbox" disabled="disabled" name="NameSync Finder">NameSync Finder</label>'+
+                    '<label style="text-decoration: underline; font-weight: bold;cursor: pointer;"><input type="checkbox" name="NameSync Finder">NameSync Finder</label>'+
                     '<span class="description" style="font-style: italic; font-size: 9pt;">Enables functionality to find and mark threads.</span>'+
                   '</div>'+
                   '<legend style="font-weight: bold;">Main</legend>'+
@@ -446,11 +446,11 @@
       if ($.getVal('persona.name') !== 'undefined') $('#NameSync_Name').value = $.getVal('persona.name');
       if ($.getVal('persona.email') !== 'undefined') $('#NameSync_Email').value = $.getVal('persona.email');
       if ($.getVal('persona.subject') !== 'undefined') $('#NameSync_Subject').value = $.getVal('persona.subject');
-      if ($.getVal('main.namesync_finder') === 'true') $.att($('[name="NameShync Finder"]'), 'checked', 'true');
+      if ($.getVal('main.namesync_finder') === 'true') $.att($('[name="NameSync Finder"]'), 'checked', 'true');
       
       $.on($('#NameSync_Settings'), 'click', function(e) {
         if (e.target.id === 'NameSync_Settings')
-          Settings.close();;
+          Settings.close();
       });
       $.on($('#NameSync_Save'), 'click', function(e) {
         Settings.save();
@@ -479,15 +479,18 @@
       subject = $('#NameSync_Subject').value;
       name = $('#NameSync_Name').value;
       email = $('#NameSync_Email').value;
-      tripfag_finder = $('[name="NameSync Finder"]:checked') ? true : false;
+      tripfag_finder = ($('[name="NameSync Finder"]:checked')) ? true : false;
       
       $.setVal('persona.name', name);
       $.setVal('persona.subject', subject);
       $.setVal('persona.email', email);
       $.setVal('main.namesync_finder', tripfag_finder);
       
-      if (!tripfag_finder && $('#finder_button', $('#boardNavMobile'))) $.destroy($('#finder_button', $('#boardNavMobile')));
-      if (tripfag_finder && !$('#finder_button', $('#boardNavMobile'))) Tripfag_Finder.init();
+      if (!tripfag_finder && $('#finder_button', $('#mod_options'))) {
+        $.destroy($('#finder_button', $('#mod_options')).previousSibling);
+        $.destroy($('#finder_button', $('#mod_options')));
+      }
+      if (tripfag_finder && !$('#finder_button', $('#mod_options'))) Tripfag_Finder.init();
     }
   };
   /*
@@ -501,15 +504,19 @@
       _ref;
       path = location.pathname.split('/');
       g.board = path[1];
-      g.view = (_ref = path[2]) === 'thread' || _ref === 'catalog' ? path[2] : 'index';
-      if (g.view !== 'thread') {
-        //return ;
+      g.view = (_ref = path[2]) === 'thread' || _ref === 'catalog' || _ref === 'res' ? path[2] : 'index';
+      if (g.view !== 'thread' && g.view !== 'res') {
+        NameSync.init();
+        Settings.init();
+        if ($.getVal('main.namesync_finder') === 'true') Tripfag_Finder.init();
+        console.log("NameSync Initialized");
+        return ;
       }
       g.thread = path[3].split('+')[0].split('.')[0];
       NameSync.init();
       Settings.init();
-      if ($.getVal('main.tripfag_finder') === 'true') Tripfag_Finder.init();
-      console.log("NameSync Initialized")
+      if ($.getVal('main.namesync_finder') === 'true') Tripfag_Finder.init();
+      console.log("NameSync Initialized");
     },
     init: function () {
       if (g.view === 'catalog') {
@@ -655,36 +662,7 @@
         }
       }, $HEADERS);
     },
-    postQREvent: function (e, data) {
-      var name, subject, email, postID, threadID;
-      console.log(e);
-      console.log(data);
-      postID = data.postid;
-      threadID = g.thread;
-      name = ($.getVal('persona.name') !== 'undefined') ? $.getVal('persona.name') : '';
-      email = ($.getVal('persona.email') !== 'undefined') ? $.getVal('persona.email') : '';
-      subject = ($.getVal('persona.subject') !== 'undefined') ? $.getVal('persona.subject') : '';
-      
-      Sync.post(name, subject, email, threadID, postID);
-      Sync.lastPosts[Sync.lastPosts.length] = postID;
-    },
-    postEvent: function (tries) {
-      var name, subject, email, postID, threadID;
-	    if (!tries) tries = 1;
-      window.setTimeout(function(){
-        //Placeholder for event detail methods
-        //postID = e.detail.postId;
-        //threadID = e.detail.threadId;
-        //postID = Object.keys(window.wrappedJSObject.Parser.trackedReplies)[Object.keys(window.wrappedJSObject.Parser.trackedReplies).length-1].substr(2);
-        //threadID = g.thread;
-        console.log(Sync.lastPosts);
-        if (window.location.href.split('#')[1] && !window.location.href.split('#')[1].split('q')[1] && !(Sync.lastPosts.indexOf(window.location.href.split('#')[1]) >= 0)) Sync.postTry();
-        else if (tries < 20) Sync.postEvent(tries+1);
-      }, tries*500);
-    },
-    postTry: function() {
-      postID = window.location.href.split('#')[1];
-      threadID = g.thread;
+    postReady: function (threadID, postID) {
       name = ($.getVal('persona.name') !== 'undefined') ? $.getVal('persona.name') : '';
       email = ($.getVal('persona.email') !== 'undefined') ? $.getVal('persona.email') : '';
       subject = ($.getVal('persona.subject') !== 'undefined') ? $.getVal('persona.subject') : '';
@@ -788,44 +766,20 @@
     return Post;
   })();
   
-  /*
   Tripfag_Finder = {
     VERSION: '2.0.3',
     init: function () {
       Tripfag_Finder.createButtons();
     },
     createButtons: function() {
-	    if ($('#boardNavMobile') && !$('#finder_button', $('#boardNavMobile'))) {
+	    if ($('#mod_options') && !$('#finder_button', $('#mod_options'))) {
         el = $.htm($.elm('a', {
           'id': 'finder_button',
           'href': 'javascript:;',
           'class': 'shortcut'
         }), 'Finder');
-        $.before(el, $('#settingsWindowLinkMobile'));
-        $.on(el, 'click', function () {
-          Tripfag_Finder.click();
-        });
-      }
-      if ($('#settingsWindowLink') && !$('#finder_button', $('#boardNavDesktop'))) {
-        el = $.htm($.elm('a', {
-          'id': 'finder_button',
-          'href': 'javascript:;',
-          'class': 'shortcut'
-        }), 'Finder');
-        $.before(el, $('#settingsWindowLink'));
-        $.after($.tn(' / '), el);
-        $.on(el, 'click', function () {
-          Tripfag_Finder.click();
-        });
-      }
-      if ($('#settingsWindowLinkBot') && !$('#finder_button', $('#boardNavDesktopFoot'))) {
-        el = $.htm($.elm('a', {
-          'id': 'finder_button',
-          'href': 'javascript:;',
-          'class': 'shortcut'
-        }), 'Finder');
-        $.before(el, $('#settingsWindowLinkBot'));
-        $.after($.tn(' / '), el);
+        $.after(el, $('#namesync_button'));
+        $.before($.tn(' / '), el);
         $.on(el, 'click', function () {
           Tripfag_Finder.click();
         });
@@ -839,11 +793,19 @@
     },
     open: function () {
       var el;
-      $html = '<div id="threadFinderContainer" class="reply" style="position: relative; max-height: 85%; width: 300px; left: 50%; margin-left: -150px; top: 10%; text-align: center;">'+
+      $html = '<div id="threadFinderContainer" class="post reply" style="position: relative; max-height: 85%; width: 300px; left: 50%; margin-left: -150px; top: 10%; text-align: center;">'+
                 '<fieldset>'+
                   '<legend style="font-weight: bold;">Threads</legend>'+
-                  '<div id="tf_threadWrapper"></div>'+
-                  '<div id="tf_online">Online Users: Waiting...</div>'+
+                  '<fieldset id="tf_passwords">'+
+                    '<legend style="font-weight: bold; visibility: visible;"><a href="javascript:void(0);" title="Show options" class="tf_optionsLink">4chan</a></legend>'+
+                    '<div id="tf_threadWrapper"></div>'+
+                    '<div id="tf_online">Online Users: Waiting...</div>'+
+                  '</fieldset>'+
+                  '<fieldset id="tf_passwords">'+
+                    '<legend style="font-weight: bold; visibility: visible;"><a href="javascript:void(0);" title="Show options" class="tf_optionsLink">8chan</a></legend>'+
+                    '<div id="tf_threadWrapper2"></div>'+
+                    '<div id="tf_online">Online Users: [Available Soon]</div>'+
+                  '</fieldset>'+
                   '<input type="button" value="Refresh">'+
                   '<select id="tf_type">'+
                     '<option value="animu">Animu</option>'+
@@ -887,7 +849,7 @@
       
       $.on($('#Tripfag_Finder'), 'click', function(e) {
         if (e.target.id === 'Tripfag_Finder')
-          Tripfag_Finder.close();;
+          Tripfag_Finder.close();
       });
       $.on($('[value="Refresh"]', $('.threadFinderContainer')), 'click', function(e) {
         Tripfag_Finder.updateThreads();
@@ -942,7 +904,7 @@
         threads = finder['data'];
         for (i = 0; i < threads.length; i++) {
           var el;
-          $html = '<a href="/b/thread/'+threads[i]['thread']+'" class="tf_threadLink">'+threads[i]['type'].charAt(0).toUpperCase()+threads[i]['type'].slice(1)+': '+threads[i]['thread']+' ('+threads[i]['votes']+')</a>'+
+          $html = '<a href="//boards.4chan.org/b/thread/'+threads[i]['thread']+'" class="tf_threadLink">'+threads[i]['type'].charAt(0).toUpperCase()+threads[i]['type'].slice(1)+': '+threads[i]['thread']+' ('+threads[i]['votes']+')</a>'+
                   '<span class="tf_Counts"> (R: '+threads[i]['r']+' I: '+threads[i]['i']+')</span>'+
                   '<info thread="'+threads[i]['thread']+'" type="'+threads[i]['type']+'"></info>';
           if (finder['admin']) $html += ' <a href="javascript:;" class="tf_adminDelete">[x]</a>';
@@ -1019,26 +981,28 @@
       $.setVal('finder.password', password);
       $.setVal('finder.admin_password', admin_password);
     }
-  }
-  */
+  };
   
   $.ready(NameSync.ready);
   
-  function fixPosting() {
-    if (window.citeReply)
-    {
-        var previous = window.dopost;
-        console.log(previous);
-        window.dopost = function(response) { 
-          previous(response);
-          Sync.postEvent();
-        }
-    }
-    else
-    {
-      window.setTimeout(function(){fixPosting();}, 1000);
-    }
-  }
-  fixPosting();
+  /* Fix Posting */
+  (function(open) {
+    XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
+      if (method == 'POST' && url.split(':')[1] == '//8chan.co/post.php') {
+        this.addEventListener("readystatechange", function() {
+          if (this.readyState == 4) {
+            var post, thread, _json = JSON.parse(this.responseText);
+            thread = (_json['redirect'].split('/')[3].split('.')[0]) ? _json['redirect'].split('/')[3].split('.')[0] : false;
+            post = (_json['id']) ? _json['id'] : false;
+            if (post && thread) {
+              Sync.postReady(thread, post);
+              console.log('NameSync: Posted '+thread+'#'+post);
+            }
+          }
+        }, false);
+      }
+      open.call(this, method, url, async, user, pass);
+    };
+  })(XMLHttpRequest.prototype.open);
   
 }).call(this);
