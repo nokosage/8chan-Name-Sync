@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         8chan Name Sync
-// @version      0.2.0
+// @version      0.2.1
 // @namespace    nokosage
 // @description  Enables names on 8chan. Does not require 8chan X.
 // @author       nokosage
@@ -13,7 +13,7 @@
 // ==/UserScript==
 
 /*
-  8chan Sync v0.2.0
+  8chan Sync v0.2.1
   https://www.namesync.org/8chan/
 
   Developers:
@@ -344,7 +344,7 @@
   
   g = {
     NAMESPACE: 'NameSync.8chan.',
-    VERSION: '0.2.0',
+    VERSION: '0.2.1',
     checked: false,
     posts: {}
   };
@@ -988,7 +988,8 @@
   /* Fix Posting */
   (function(open) {
     XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
-      if (method == 'POST' && url.split(':')[1] == '//8chan.co/post.php') {
+      var _ref;
+      if (method === 'POST' && ((_ref = url.split(':')[1]) === '//8chan.co/post.php' || _ref === '//www.8chan.co/post.php')) {
         this.addEventListener("readystatechange", function() {
           if (this.readyState == 4) {
             var post, thread, _json = JSON.parse(this.responseText);

@@ -1,4 +1,7 @@
-0.2.0 -> STABLE
+0.2.1 -> STABLE
+- Fixed posting for www subdomain
+
+0.2.0 -> STABLE (BROKEN FOR www.8chan*)
 - Better post handling
   - Should no longer miss names or overwrite others
 - Now runs on board pages and the catalog

@@ -1,6 +1,6 @@
 ﻿// ==UserScript==
 // @name         8chan Name Sync
-// @version      0.2.0
+// @version      0.2.1
 // @namespace    nokosage
 // @description  Enables names on 8chan. Does not require 8chan X.
 // @author       nokosage
