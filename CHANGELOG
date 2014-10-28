@@ -1,4 +1,10 @@
-0.2.1
+0.2.3 - 10/28/2014
+- Namespace changed for 8chan Z
+
+0.2.2 - 10/27/2014
+- Change to work with 8chan X
+
+0.2.1 - 10/XX/2014
 - Fix GM URLs
 - Works with 8chan Z and more
 
