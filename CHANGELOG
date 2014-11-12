@@ -1,3 +1,11 @@
+0.3.0 - 11/11/2014
+- Initial 8chan finder implementation
+  - Currently only works for /b/ (may change)
+  - Needs server work
+- Changed api.b-stats.org to t-f.xyz
+  - Update version number
+- Stability tweaks
+
 0.2.3 - 10/28/2014
 - Namespace changed for 8chan Z
 
