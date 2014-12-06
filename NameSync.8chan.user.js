@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         8chan Name Sync
-// @version      0.3.1
+// @version      0.3.2
 // @namespace    nokosage
 // @description  Enables names on 8chan. Does not require 8chan X.
 // @author       nokosage
@@ -13,7 +13,7 @@
 // ==/UserScript==
 
 /*
-  8chan Sync v0.3.1
+  8chan Sync v0.3.2
   https://www.namesync.org/8chan/
 
   Developers:
@@ -344,7 +344,7 @@
   
   g = {
     NAMESPACE: 'NameSync.8chan.',
-    VERSION: '0.3.1',
+    VERSION: '0.3.2',
     checked: false,
     posts: {}
   };
@@ -662,7 +662,7 @@
         tripspan.textContent = tripcode;
       }
       if ($.getVal('main.mark_posts') === 'true') {
-        $.addClass(post.nodes.post, 'sync-post');
+        $.addClass($('.body', post.nodes.post), 'sync-post');
       }
       Names.lastUpdate = data.time;
     }
