@@ -1,3 +1,7 @@
+0.3.3 - 1/13/2015
+- Changed domain from 8chan.co to 8ch*
+  - Should work with 8chan.co and 8ch.net
+
 0.3.2 - 12/6/2014
 - Fix to work with 8chan's scripts
 
