@@ -1,10 +1,10 @@
 ﻿// ==UserScript==
 // @name         8chan Name Sync
-// @version      0.3.2
+// @version      0.3.3
 // @namespace    nokosage
 // @description  Enables names on 8chan. Does not require 8chan X.
 // @author       nokosage
-// @include      *://*8chan.co/b/*
+// @include      *://*8ch*/b/
 // @run-at       document-start
 // @grant        none
 // @updateURL    https://namesync.org/8chan/builds/NameSync.8chan.meta.js
