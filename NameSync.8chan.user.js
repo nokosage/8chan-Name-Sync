@@ -4,7 +4,7 @@
 // @namespace    nokosage
 // @description  Enables names on 8chan. Does not require 8chan X.
 // @author       nokosage
-// @include      *://*8ch*/b/
+// @include      *://*8ch*/b/*
 // @run-at       document-start
 // @grant        none
 // @updateURL    https://namesync.org/8chan/builds/NameSync.8chan.meta.js
