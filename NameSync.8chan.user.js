@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         8chan Name Sync
-// @version      0.3.3
+// @version      0.3.4
 // @namespace    nokosage
 // @description  Enables names on 8chan. Does not require 8chan X.
 // @author       nokosage
@@ -13,7 +13,7 @@
 // ==/UserScript==
 
 /*
-  8chan Sync v0.3.3
+  8chan Sync v0.3.4
   https://www.namesync.org/8chan/
 
   Developers:
@@ -344,7 +344,8 @@
   
   g = {
     NAMESPACE: 'NameSync.8chan.',
-    VERSION: '0.3.2',
+    VERSION: '0.3.4',
+    HOST: '8ch.net',
     checked: false,
     posts: {}
   };
@@ -980,7 +981,7 @@
         for (i = 0; i < threads.length; i++) {
           var el, mark;
           mark = threads[i];
-          $html = '<a href="//8chan.co/'+mark['board']+'/res/'+mark['thread']+'.html" class="tf_threadLink">'+mark['type'].charAt(0).toUpperCase()+mark['type'].slice(1)+': /'+mark['board']+'/'+mark['thread']+' ('+mark['votes']+')</a>'+
+          $html = '<a href="//'+g.HOST+'/'+mark['board']+'/res/'+mark['thread']+'.html" class="tf_threadLink">'+mark['type'].charAt(0).toUpperCase()+mark['type'].slice(1)+': /'+mark['board']+'/'+mark['thread']+' ('+mark['votes']+')</a>'+
                   '<span class="tf_Counts"> (R: '+mark['r']+' I: '+mark['i']+')</span>'+
                   '<info thread="'+mark['thread']+'" type="'+mark['type']+'"></info>';
           if (finder['admin']) $html += ' <a href="javascript:;" class="tf_adminDelete">[x]</a>';
@@ -1087,7 +1088,7 @@
   (function(open) {
     XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
       var _ref;
-      if (method === 'POST' && ((_ref = url.split(':')[1]) === '//8chan.co/post.php' || _ref === '//www.8chan.co/post.php')) {
+      if (method === 'POST' && ((_ref = url.split(':')[1]) === '//'+g.HOST+'/post.php' || _ref === '//www.'+g.HOST+'/post.php')) {
         this.addEventListener("readystatechange", function() {
           if (this.readyState == 4) {
             var post, thread, _json = JSON.parse(this.responseText);
