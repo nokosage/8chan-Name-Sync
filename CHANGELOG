@@ -1,3 +1,9 @@
+0.3.5 - 1/13/2015
+- Fix for post.php handling
+
+0.3.4 - 1/13/2015 -> Not working
+- Change domain and add g.HOST = 8ch.net
+
 0.3.3 - 1/13/2015
 - Changed domain from 8chan.co to 8ch*
   - Should work with 8chan.co and 8ch.net
