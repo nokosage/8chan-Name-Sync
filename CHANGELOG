@@ -1,3 +1,10 @@
+0.4.0 - 6/4/2015
+- Fix for 8ch.net/b/ domain
+- Changed server domain from namesync.org to namesync.net
+  - Same server, different domain (thanks Milky)
+- Fixed check for update button
+- Server still does not remove threads
+
 0.3.5 - 1/13/2015
 - Fix for post.php handling
 
