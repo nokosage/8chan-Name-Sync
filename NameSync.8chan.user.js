@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         8chan Name Sync
-// @version      0.4.0
+// @version      0.4.1
 // @namespace    nokosage
 // @description  Enables names on 8chan. Does not require 8chan X.
 // @author       nokosage
@@ -13,7 +13,7 @@
 // ==/UserScript==
 
 /*
-  8chan Sync v0.4.0
+  8chan Sync v0.4.1
   https://www.namesync.net/8chan/
 
   Developers:
@@ -344,7 +344,7 @@
   
   g = {
     NAMESPACE: 'NameSync.8chan.',
-    VERSION: '0.4.0',
+    VERSION: '0.4.1',
     HOST: '8ch.net',
     checked: false,
     posts: {}
@@ -377,6 +377,7 @@
         }
       }
 	    Settings.createSettingsButtons();
+      if ($.getVal('main.namesync_finder') === 'undefined') $.setVal('main.namesync_finder', true);
     },
 	  createSettingsButtons: function() {
       var el, op;
